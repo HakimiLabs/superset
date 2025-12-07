@@ -251,6 +251,25 @@ RUN python -m compileall /app/superset
 USER superset
 
 ######################################################################
+# Lean custom image - lean + additional dependencies
+######################################################################
+FROM lean AS lean-custom
+USER root
+
+# Install system-level dependencies
+RUN /app/docker/apt-install.sh \
+    pkg-config \
+    python3-dev \
+    default-libmysqlclient-dev \
+    build-essential
+
+# Install additional Python packages
+RUN --mount=type=cache,target=${SUPERSET_HOME}/.cache/uv \
+    uv pip install authlib psycopg2-binary mysqlclient
+
+USER superset
+
+######################################################################
 # Dev image...
 ######################################################################
 FROM python-common AS dev

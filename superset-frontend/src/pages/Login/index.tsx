@@ -98,7 +98,7 @@ export default function Login() {
   );
 
   const buildProviderLoginUrl = (providerName: string) => {
-    const base = `/login/${providerName}`;
+    const base = `/analytics/login/${providerName}`;
     return nextUrl
       ? `${base}${base.includes('?') ? '&' : '?'}next=${encodeURIComponent(nextUrl)}`
       : base;
