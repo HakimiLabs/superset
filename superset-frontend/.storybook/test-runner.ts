@@ -16,46 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import type { TestRunnerConfig } from '@storybook/test-runner';
 
-.superset-legacy-chart-country-map svg {
-  background-color: #feffff;
-}
+/**
+ * Test runner configuration for Storybook smoke tests.
+ *
+ * The test-runner visits each story and verifies it renders without errors.
+ * These are basic smoke tests - they don't test interactions or assertions,
+ * just that stories can render successfully.
+ */
+const config: TestRunnerConfig = {
+  async preVisit(page) {
+    // Listen for page errors (JavaScript exceptions) and log them
+    // This helps identify stories that crash during rendering
+    page.on('pageerror', error => {
+      console.error(`[page error] ${error.message}`);
+    });
+  },
+};
 
-.superset-legacy-chart-country-map {
-  position: relative;
-}
-
-.superset-legacy-chart-country-map .background {
-  fill: rgba(255, 255, 255, 0);
-  pointer-events: all;
-}
-
-.superset-legacy-chart-country-map .map-layer {
-  fill: #fff;
-  stroke: #aaa;
-}
-
-.superset-legacy-chart-country-map .effect-layer {
-  pointer-events: none;
-}
-
-.superset-legacy-chart-country-map .text-layer {
-  color: #333333;
-  text-anchor: middle;
-  pointer-events: none;
-}
-
-.superset-legacy-chart-country-map text.result-text {
-  font-weight: 300;
-  font-size: 24px;
-}
-
-.superset-legacy-chart-country-map text.big-text {
-  font-weight: 700;
-  font-size: 16px;
-}
-
-.superset-legacy-chart-country-map path.region {
-  cursor: pointer;
-  stroke: #eee;
-}
+export default config;
