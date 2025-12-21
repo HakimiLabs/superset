@@ -31,6 +31,7 @@ import { availableDomains } from 'src/utils/hostNamesConfig';
 import { safeStringify } from 'src/utils/safeStringify';
 import { optionLabel } from 'src/utils/common';
 import { ensureAppRoot } from 'src/utils/pathUtils';
+import { applicationRoot } from 'src/utils/getBootstrapData';
 import { URL_PARAMS } from 'src/constants';
 import {
   DISABLE_INPUT_OPERATORS,
@@ -262,7 +263,7 @@ export const exportChart = async ({
     });
     payload = formData;
   } else {
-    url = ensureAppRoot('/api/v1/chart/data');
+    url = '/api/v1/chart/data';
     payload = await buildV1ChartDataPayload({
       formData,
       force,
@@ -283,7 +284,25 @@ export const exportChart = async ({
     });
   } else {
     // Fallback to original behavior for non-streaming exports
-    SupersetClient.postForm(url, { form_data: safeStringify(payload) });
+    // If url is a full URL (from legacy API), extract just the pathname
+    // and remove the app root prefix since SupersetClient will add it
+    let endpoint = url;
+    if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+      try {
+        const urlObj = new URL(url);
+        let pathname = urlObj.pathname + urlObj.search;
+        // Remove app root prefix if present (SupersetClient will add it)
+        const appRoot = applicationRoot();
+        if (appRoot && pathname.startsWith(appRoot)) {
+          pathname = pathname.slice(appRoot.length);
+        }
+        endpoint = pathname;
+      } catch {
+        // If URL parsing fails, use the original url
+        endpoint = url;
+      }
+    }
+    SupersetClient.postForm(endpoint, { form_data: safeStringify(payload) });
   }
 };
 

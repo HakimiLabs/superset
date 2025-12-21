@@ -567,7 +567,7 @@ export function redirectSQLLab(formData, history) {
             },
           });
         } else {
-          SupersetClient.postForm(ensureAppRoot(redirectUrl), {
+          SupersetClient.postForm(redirectUrl, {
             form_data: safeStringify(payload),
           });
         }
