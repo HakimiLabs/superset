@@ -146,6 +146,10 @@ except ImportError:
 # ============================================================================
 # CORS allow for user images configuration
 # ============================================================================
+FEATURE_FLAGS = {
+    "ENABLE_TEMPLATE_PROCESSING": True,
+}
+
 TALISMAN_DEV_CONFIG = {
     "content_security_policy": {
         "base-uri": ["'self'"],
